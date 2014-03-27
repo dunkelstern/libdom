@@ -264,7 +264,7 @@ dom_xml_error dom_xml_parser_parse_chunk(dom_xml_parser *parser,
 {
 	xmlParserErrors err;
 
-	err = xmlParseChunk(parser->xml_ctx, (char *) data, len, 0);
+	err = xmlParseChunk(parser->xml_ctx, (char *) data, (int)len, 0);
 	if (err != XML_ERR_OK) {
 		parser->msg(DOM_MSG_ERROR, parser->mctx, 
 				"xmlParseChunk failed: %d", err);
