@@ -178,12 +178,12 @@ void _dom_text_finalise(dom_text *text)
  * once it has finished with it.
  */
 dom_exception _dom_text_split_text(dom_text *text,
-		uint32_t offset, dom_text **result)
+		off_t offset, dom_text **result)
 {
 	dom_node_internal *t = (dom_node_internal *) text;
 	dom_string *value;
 	dom_text *res;
-	uint32_t len;
+	size_t len;
 	dom_exception err;
 
 	if (_dom_node_readonly(t)) {

@@ -195,7 +195,7 @@ dom_exception _dom_event_get_cancelable(dom_event *evt, bool *cancelable)
  * \param timestamp  The returned value
  * \return DOM_NO_ERR.
  */
-dom_exception _dom_event_get_timestamp(dom_event *evt, unsigned int *timestamp)
+dom_exception _dom_event_get_timestamp(dom_event *evt, time_t *timestamp)
 {
 	*timestamp = evt->timestamp;
 	return DOM_NO_ERR;

@@ -61,12 +61,12 @@ bool dom_string_lwc_isequal(const dom_string *s1, lwc_string *s2);
 bool dom_string_caseless_lwc_isequal(const dom_string *s1, lwc_string *s2);
 
 /* Get the index of the first occurrence of a character in a dom string */
-uint32_t dom_string_index(dom_string *str, uint32_t chr);
+off_t dom_string_index(dom_string *str, uint32_t chr);
 /* Get the index of the last occurrence of a character in a dom string */
-uint32_t dom_string_rindex(dom_string *str, uint32_t chr);
+off_t dom_string_rindex(dom_string *str, uint32_t chr);
 
 /* Get the length, in characters, of a dom string */
-uint32_t dom_string_length(dom_string *str);
+size_t dom_string_length(dom_string *str);
 
 /**
  * Get the raw character data of the dom_string.
@@ -90,16 +90,16 @@ dom_exception dom_string_concat(dom_string *s1, dom_string *s2,
 
 /* Extract a substring from a dom string */
 dom_exception dom_string_substr(dom_string *str, 
-		uint32_t i1, uint32_t i2, dom_string **result);
+		off_t i1, off_t i2, dom_string **result);
 
 /* Insert data into a dom string at the given location */
 dom_exception dom_string_insert(dom_string *target,
-		dom_string *source, uint32_t offset,
+		dom_string *source, off_t offset,
 		dom_string **result);
 
 /* Replace a section of a dom string */
 dom_exception dom_string_replace(dom_string *target,
-		dom_string *source, uint32_t i1, uint32_t i2,
+		dom_string *source, off_t i1, off_t i2,
 		dom_string **result);
 
 /* Generate an uppercase version of the given string */

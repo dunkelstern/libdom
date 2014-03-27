@@ -390,7 +390,7 @@ bool dom_string_caseless_lwc_isequal(const dom_string *s1, lwc_string *s2)
  * \param chr  UCS4 value to look for
  * \return Character index of found character, or -1 if none found 
  */
-uint32_t dom_string_index(dom_string *str, uint32_t chr)
+off_t dom_string_index(dom_string *str, uint32_t chr)
 {
 	const uint8_t *s;
 	size_t clen, slen;
@@ -427,11 +427,12 @@ uint32_t dom_string_index(dom_string *str, uint32_t chr)
  * \param chr  UCS4 value to look for
  * \return Character index of found character, or -1 if none found
  */
-uint32_t dom_string_rindex(dom_string *str, uint32_t chr)
+off_t dom_string_rindex(dom_string *str, uint32_t chr)
 {
 	const uint8_t *s;
 	size_t clen = 0, slen;
-	uint32_t c, coff, index;
+	uint32_t c = 0;
+    off_t coff, index;
 	parserutils_error err;
 
 	s = (const uint8_t *) dom_string_data(str);
@@ -441,7 +442,7 @@ uint32_t dom_string_rindex(dom_string *str, uint32_t chr)
 
 	while (slen > 0) {
 		err = parserutils_charset_utf8_prev(s, slen, 
-				(uint32_t *) &coff);
+				(off_t *) &coff);
 		if (err == PARSERUTILS_OK) {
 			err = parserutils_charset_utf8_to_ucs4(s + coff, 
 					slen - clen, &c, &clen);
@@ -468,7 +469,7 @@ uint32_t dom_string_rindex(dom_string *str, uint32_t chr)
  * \param str  The string to measure the length of
  * \return The length of the string, in characters
  */
-uint32_t dom_string_length(dom_string *str)
+size_t dom_string_length(dom_string *str)
 {
 	const uint8_t *s;
 	size_t slen, clen;
@@ -600,11 +601,11 @@ dom_exception dom_string_concat(dom_string *s1, dom_string *s2,
  * should dereference it once it has finished with it.
  */
 dom_exception dom_string_substr(dom_string *str, 
-		uint32_t i1, uint32_t i2, dom_string **result)
+		off_t i1, off_t i2, dom_string **result)
 {
 	const uint8_t *s;
 	size_t slen;
-	uint32_t b1, b2;
+	off_t b1, b2;
 	parserutils_error err;
 
 	/* target string is NULL equivalent to empty. */
@@ -643,7 +644,7 @@ dom_exception dom_string_substr(dom_string *str,
 	}
 
 	/* Create a string from the specified byte range */
-	return dom_string_create(s + b1, b2 - b1, result);
+	return dom_string_create(s + b1, (size_t)(b2 - b1), result);
 }
 
 /**
@@ -661,13 +662,13 @@ dom_exception dom_string_substr(dom_string *str,
  * should dereference it once it has finished with it. 
  */
 dom_exception dom_string_insert(dom_string *target,
-		dom_string *source, uint32_t offset,
+		dom_string *source, off_t offset,
 		dom_string **result)
 {
 	dom_string_internal *res;
 	const uint8_t *t, *s;
-	uint32_t tlen, slen, clen;
-	uint32_t ins = 0;
+	size_t tlen, slen, clen;
+	off_t ins = 0;
 	parserutils_error err;
 
 	/* target string is NULL equivalent to empty. */
@@ -716,7 +717,7 @@ dom_exception dom_string_insert(dom_string *target,
 
 	/* Copy initial portion of target, if any, into result */
 	if (ins > 0) {
-		memcpy(res->data.cdata.ptr, t, ins);
+		memcpy(res->data.cdata.ptr, t, (unsigned long)ins);
 	}
 
 	/* Copy inserted data into result */
@@ -724,7 +725,7 @@ dom_exception dom_string_insert(dom_string *target,
 
 	/* Copy remainder of target, if any, into result */
 	if (tlen - ins > 0) {
-		memcpy(res->data.cdata.ptr + ins + slen, t + ins, tlen - ins);
+		memcpy(res->data.cdata.ptr + ins + slen, t + ins, (unsigned long)(tlen - ins));
 	}
 
 	res->data.cdata.ptr[tlen + slen] = '\0';
@@ -754,13 +755,13 @@ dom_exception dom_string_insert(dom_string *target,
  * should dereference it once it has finished with it. 
  */
 dom_exception dom_string_replace(dom_string *target,
-		dom_string *source, uint32_t i1, uint32_t i2,
+		dom_string *source, off_t i1, off_t i2,
 		dom_string **result)
 {
 	dom_string_internal *res;
 	const uint8_t *t, *s;
-	uint32_t tlen, slen;
-	uint32_t b1, b2;
+	size_t tlen, slen;
+	off_t b1, b2;
 	parserutils_error err;
 
 	/* target string is NULL equivalent to empty. */
@@ -809,7 +810,7 @@ dom_exception dom_string_replace(dom_string *target,
 	}
 
 	/* Allocate data buffer for result contents */
-	res->data.cdata.ptr = malloc(tlen + slen - (b2 - b1) + 1);
+	res->data.cdata.ptr = malloc((unsigned long)(tlen + slen - (b2 - b1) + 1));
 	if (res->data.cdata.ptr == NULL) {
 		free(res);
 		return DOM_NO_MEM_ERR;
@@ -817,7 +818,7 @@ dom_exception dom_string_replace(dom_string *target,
 
 	/* Copy initial portion of target, if any, into result */
 	if (b1 > 0) {
-		memcpy(res->data.cdata.ptr, t, b1);
+		memcpy(res->data.cdata.ptr, t, (unsigned long)b1);
 	}
 
 	/* Copy replacement data into result */
@@ -827,12 +828,12 @@ dom_exception dom_string_replace(dom_string *target,
 
 	/* Copy remainder of target, if any, into result */
 	if (tlen - b2 > 0) {
-		memcpy(res->data.cdata.ptr + b1 + slen, t + b2, tlen - b2);
+		memcpy(res->data.cdata.ptr + b1 + slen, t + b2, (unsigned long)(tlen - b2));
 	}
 
 	res->data.cdata.ptr[tlen + slen - (b2 - b1)] = '\0';
 
-	res->data.cdata.len = tlen + slen - (b2 - b1);
+	res->data.cdata.len = (size_t)(tlen + slen - (b2 - b1));
 
 	res->base.refcnt = 1;
 

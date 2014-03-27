@@ -174,13 +174,13 @@ bool binary_search(unsigned int ch, int left, int right,
 bool _dom_is_character_in_group(unsigned int ch,
 		const struct xml_char_group *group)
 {
-	int len = group->len;
+	size_t len = group->len;
 	const struct xml_char_range *range = group->range;
 
 	if (ch < range[0].start || ch > range[len-1].end)
 		return false;
 
-	return binary_search(ch, 0, len - 1, range);
+	return binary_search(ch, 0, (int)len - 1, range);
 }
 
 #ifdef CHVALID_DEBUG

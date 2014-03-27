@@ -31,7 +31,7 @@ struct dom_event {
 	dom_event_flow_phase phase;		/**< The event phase */
 	bool bubble;	/**< Whether this event is a bubbling event */
 	bool cancelable;	/**< Whether this event is cancelable */
-	unsigned int timestamp;
+	time_t timestamp;
 			/**< The timestamp this event is created */
 
 	dom_string *namespace;	/**< The namespace of this event */

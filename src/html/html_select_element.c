@@ -179,7 +179,7 @@ dom_exception dom_html_select_element_get_selected_index(
 	bool selected;
 	dom_html_options_collection *col;
 	
-	err = _dom_html_select_element_make_collection(ele, &col);
+	_dom_html_select_element_make_collection(ele, &col);
 
 	err = dom_html_options_collection_get_length(col, &len);
 	if (err != DOM_NO_ERR) {

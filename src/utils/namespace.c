@@ -131,7 +131,8 @@ dom_exception _dom_namespace_finalise(void)
 dom_exception _dom_namespace_validate_qname(dom_string *qname,
 		dom_string *namespace)
 {
-	uint32_t colon, len;
+	size_t len;
+    off_t colon;
 
 	if (xml == NULL) {
 		dom_exception err = _dom_namespace_initialise();
@@ -251,7 +252,7 @@ dom_exception _dom_namespace_validate_qname(dom_string *qname,
 dom_exception _dom_namespace_split_qname(dom_string *qname,
 		dom_string **prefix, dom_string **localname)
 {
-	uint32_t colon;
+	off_t colon;
 	dom_exception err;
 
 	if (xml == NULL) {

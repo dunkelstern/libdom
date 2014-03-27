@@ -34,18 +34,18 @@ dom_exception _dom_characterdata_get_data(struct dom_characterdata *cdata,
 dom_exception _dom_characterdata_set_data(struct dom_characterdata *cdata,
 		dom_string *data);
 dom_exception _dom_characterdata_get_length(struct dom_characterdata *cdata,
-		uint32_t *length);
+		size_t *length);
 dom_exception _dom_characterdata_substring_data(
-		struct dom_characterdata *cdata, uint32_t offset,
+		struct dom_characterdata *cdata, off_t offset,
 		uint32_t count, dom_string **data);
 dom_exception _dom_characterdata_append_data(struct dom_characterdata *cdata,
 		dom_string *data);
 dom_exception _dom_characterdata_insert_data(struct dom_characterdata *cdata,
-		uint32_t offset, dom_string *data);
+		off_t offset, dom_string *data);
 dom_exception _dom_characterdata_delete_data(struct dom_characterdata *cdata,
-		uint32_t offset, uint32_t count);
+		off_t offset, uint32_t count);
 dom_exception _dom_characterdata_replace_data(struct dom_characterdata *cdata,
-		uint32_t offset, uint32_t count,
+		off_t offset, uint32_t count,
 		dom_string *data);
 dom_exception _dom_characterdata_get_text_content(
 		dom_node_internal *node,

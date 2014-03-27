@@ -21,7 +21,7 @@ typedef struct dom_text_vtable {
 	struct dom_characterdata_vtable base;
 
 	dom_exception (*dom_text_split_text)(struct dom_text *text,
-			uint32_t offset, struct dom_text **result);
+			off_t offset, struct dom_text **result);
 	dom_exception (*dom_text_get_is_element_content_whitespace)(
 			struct dom_text *text, bool *result);
 	dom_exception (*dom_text_get_whole_text)(struct dom_text *text,
